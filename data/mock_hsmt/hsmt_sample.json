@@ -1,0 +1,62 @@
+{
+  "doc_id": "HSMT_BAC_SONG_HONG_2026",
+  "doc_role": "HSMT",
+  "doc_category": "TONG_HOP",
+  "file_name": "HSMT_Khu_Do_Thi_Bac_Song_Hong.pdf",
+  "total_pages": 45,
+  "metadata": {
+    "bidding_package_name": "Dự án Đầu tư Xây dựng Khu đô thị mới Bắc Sông Hồng",
+    "bid_close_date": "2026-05-15",
+    "total_investment": 500000000000.0,
+    "required_guarantee_days": 120,
+    "required_guarantee_amount": 25000000000.0,
+    "required_guarantee_rate_percent": 5.0
+  },
+  "sections": [
+    {
+      "section_id": "HSMT_SEC_01",
+      "parent_id": null,
+      "heading": "Chương I. Mục 1. Tư cách hợp lệ của Nhà thầu",
+      "page_start": 4,
+      "page_end": 5,
+      "content_markdown": "Nhà thầu tham dự phải có Giấy chứng nhận đăng ký doanh nghiệp hợp pháp, hạch toán tài chính độc lập, không đang trong quá trình giải thể, phá sản hoặc bị cấm tham gia hoạt động đấu thầu theo quy định của pháp luật.",
+      "tables": [],
+      "visual_cues": {
+        "has_signature": false,
+        "has_red_stamp": false,
+        "stamp_text_ocr": null,
+        "page_numbers": []
+      }
+    },
+    {
+      "section_id": "HSMT_SEC_02",
+      "parent_id": null,
+      "heading": "Chương I. Mục 2. Đơn dự thầu và Đại diện hợp pháp",
+      "page_start": 6,
+      "page_end": 7,
+      "content_markdown": "Đơn dự thầu phải được người đại diện theo pháp luật của nhà thầu ký tên và đóng dấu. Trường hợp ủy quyền thì người được ủy quyền phải có Giấy ủy quyền hợp lệ được ký trước hoặc cùng ngày ký đơn dự thầu và còn hiệu lực đến thời điểm đóng thầu ngày 15/05/2026.",
+      "tables": [],
+      "visual_cues": {
+        "has_signature": false,
+        "has_red_stamp": false,
+        "stamp_text_ocr": null,
+        "page_numbers": []
+      }
+    },
+    {
+      "section_id": "HSMT_SEC_03",
+      "parent_id": null,
+      "heading": "Chương I. Mục 3. Yêu cầu về Bảo đảm dự thầu",
+      "page_start": 8,
+      "page_end": 9,
+      "content_markdown": "1. Tổng mức đầu tư dự kiến của dự án là 500.000.000.000 VNĐ (Năm trăm tỷ đồng).\n2. Để bảo đảm trách nhiệm tham gia dự thầu, nhà thầu phải nộp Thư bảo lãnh dự thầu với giá trị là 25.000.000.000 VNĐ (tương đương 5,0% tổng mức đầu tư của dự án).\n3. Thời hạn hiệu lực của bảo lãnh dự thầu tối thiểu là 120 ngày kể từ ngày đóng thầu (tức từ ngày 15/05/2026 đến hết ngày 12/09/2026). Thư bảo lãnh phải do một ngân hàng thương mại hoạt động hợp pháp tại Việt Nam phát hành.",
+      "tables": [],
+      "visual_cues": {
+        "has_signature": false,
+        "has_red_stamp": false,
+        "stamp_text_ocr": null,
+        "page_numbers": []
+      }
+    }
+  ]
+}

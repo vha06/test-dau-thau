@@ -1,0 +1,59 @@
+{
+  "doc_id": "HSDT_SAO_VIET_2026",
+  "doc_role": "HSDT",
+  "doc_category": "TONG_HOP",
+  "file_name": "HSDT_Sao_Viet_Khu_Do_Thi_Bac_Song_Hong.pdf",
+  "total_pages": 60,
+  "metadata": {
+    "bidding_package_name": "Dự án Đầu tư Xây dựng Khu đô thị mới Bắc Sông Hồng",
+    "bidder_name": "Công ty Cổ phần Đầu tư Xây dựng Sao Việt",
+    "submission_date": "2026-05-12"
+  },
+  "sections": [
+    {
+      "section_id": "HSDT_SEC_01",
+      "parent_id": null,
+      "heading": "Đơn dự thầu",
+      "page_start": 2,
+      "page_end": 3,
+      "content_markdown": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nĐƠN DỰ THẦU\n\nKính gửi: Bên mời thầu Dự án Đầu tư Xây dựng Khu đô thị mới Bắc Sông Hồng\n\nSau khi nghiên cứu HSMT và các văn bản sửa đổi, chúng tôi - Công ty Cổ phần Đầu tư Xây dựng Sao Việt, xin cam kết tham gia dự thầu gói thầu trên theo đúng yêu cầu.\nNgày ký đơn dự thầu: 10/05/2026.\nThời điểm đóng thầu theo thông báo: 15/05/2026.\nNgười ký đơn dự thầu: Nguyễn Văn An - Phó Tổng Giám đốc (theo Giấy ủy quyền số 12/GUQ-SV ngày 05/05/2026).",
+      "tables": [],
+      "visual_cues": {
+        "has_signature": true,
+        "has_red_stamp": true,
+        "stamp_text_ocr": "CÔNG TY CỔ PHẦN ĐẦU TƯ XÂY DỰNG SAO VIỆT - MST: 0102345678",
+        "page_numbers": [3]
+      }
+    },
+    {
+      "section_id": "HSDT_SEC_02",
+      "parent_id": null,
+      "heading": "Thư bảo lãnh dự thầu",
+      "page_start": 4,
+      "page_end": 5,
+      "content_markdown": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN VIỆT THƯƠNG - CHI NHÁNH HÀ NỘI\n\nTHƯ BẢO LÃNH DỰ THẦU\nSố: 8899/BL-NH/2026\n\nNgày phát hành bảo lãnh: 10/05/2026.\nBên được bảo lãnh: Công ty Cổ phần Đầu tư Xây dựng Sao Việt.\nBên nhận bảo lãnh: Bên mời thầu Dự án Đầu tư Xây dựng Khu đô thị mới Bắc Sông Hồng.\nSố tiền bảo lãnh: 25.000.000.000 VNĐ (Hai mươi lăm tỷ đồng chẵn).\nThời hạn hiệu lực: Thư bảo lãnh này có hiệu lực kể từ ngày phát hành 10/05/2026 đến hết ngày 08/08/2026.\nNgày đóng thầu của gói thầu là ngày 15/05/2026.",
+      "tables": [],
+      "visual_cues": {
+        "has_signature": true,
+        "has_red_stamp": true,
+        "stamp_text_ocr": "NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN VIỆT THƯƠNG - CN HÀ NỘI",
+        "page_numbers": [5]
+      }
+    },
+    {
+      "section_id": "HSDT_SEC_03",
+      "parent_id": null,
+      "heading": "Giấy ủy quyền tham gia dự thầu",
+      "page_start": 6,
+      "page_end": 7,
+      "content_markdown": "GIẤY ỦY QUYỀN SỐ 12/GUQ-SV\n\nHôm nay, ngày 05/05/2026, tại trụ sở Công ty Cổ phần Đầu tư Xây dựng Sao Việt.\nNgười ủy quyền: Ông Trần Đình Trọng - Chức vụ: Tổng Giám đốc (Người đại diện theo pháp luật).\nNgười được ủy quyền: Ông Nguyễn Văn An - Chức vụ: Phó Tổng Giám đốc.\nNội dung ủy quyền: Đại diện nhà thầu ký đơn dự thầu, các tài liệu trong HSDT Dự án Khu đô thị mới Bắc Sông Hồng.\nThời hạn ủy quyền: Có hiệu lực kể từ ngày 05/05/2026 cho đến khi kết thúc quá trình lựa chọn nhà đầu tư gói thầu đóng thầu ngày 15/05/2026.",
+      "tables": [],
+      "visual_cues": {
+        "has_signature": true,
+        "has_red_stamp": true,
+        "stamp_text_ocr": "",
+        "page_numbers": [7]
+      }
+    }
+  ]
+}

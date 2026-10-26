@@ -1,0 +1,44 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "doc_id": "LAW_DAU_THAU_DAT_DAI_2023",
+      "file_name": "luat_dau_thau_dat_dai_trich_yeu.pdf",
+      "section_id": "DIEU_14",
+      "heading": "Điều 14. Bảo đảm dự thầu trong lựa chọn nhà đầu tư thực hiện dự án",
+      "page_start": 3,
+      "page_end": 4,
+      "content_markdown": "1. Mức bảo đảm dự thầu đối với lựa chọn nhà đầu tư được quy định từ 1% đến 3% tổng mức đầu tư của dự án.\n2. Hồ sơ mời thầu không được quy định tỷ lệ bảo đảm dự thầu vượt quá mức trần 3% tổng mức đầu tư.\n3. Thời gian có hiệu lực của bảo đảm dự thầu được quy định trong hồ sơ mời thầu bằng thời gian có hiệu lực của hồ sơ dự thầu cộng thêm từ 20 đến 30 ngày.\n4. Bảo đảm dự thầu được thực hiện dưới hình thức thư bảo lãnh do tổ chức tín dụng trong nước hoặc chi nhánh ngân hàng nước ngoài thành lập theo pháp luật Việt Nam phát hành.",
+      "id": "LAW_DAU_THAU_DAT_DAI_2023::DIEU_14"
+    },
+    {
+      "doc_id": "LAW_DAU_THAU_DAT_DAI_2023",
+      "file_name": "luat_dau_thau_dat_dai_trich_yeu.pdf",
+      "section_id": "DIEU_18",
+      "heading": "Điều 18. Đánh giá tính hợp lệ của Hồ sơ dự thầu",
+      "page_start": 5,
+      "page_end": 6,
+      "content_markdown": "1. Hồ sơ dự thầu của nhà thầu được đánh giá là hợp lệ khi đáp ứng đầy đủ các điều kiện sau đây:\na) Có đơn dự thầu hợp lệ được ký tên bởi người đại diện theo pháp luật hoặc người được ủy quyền hợp pháp theo quy định tại Điều 19 và có đóng dấu đỏ của nhà thầu.\nb) Có bảo đảm dự thầu đáp ứng đúng giá trị, thời hạn hiệu lực và tổ chức phát hành theo quy định tại Điều 14.\nc) Không có tên trong hai hoặc nhiều hồ sơ dự thầu với tư cách là nhà thầu độc lập hoặc thành viên liên danh tham gia cùng một gói thầu.\nd) Nhà thầu có tư cách hợp lệ theo quy định của pháp luật đấu thầu và đăng ký kinh doanh hợp pháp.",
+      "id": "LAW_DAU_THAU_DAT_DAI_2023::DIEU_18"
+    },
+    {
+      "doc_id": "LAW_DAU_THAU_DAT_DAI_2023",
+      "file_name": "luat_dau_thau_dat_dai_trich_yeu.pdf",
+      "section_id": "DIEU_19",
+      "heading": "Điều 19. Tính hợp pháp của Giấy ủy quyền và chữ ký, con dấu",
+      "page_start": 7,
+      "page_end": 8,
+      "content_markdown": "1. Trường hợp người ký đơn dự thầu là người được ủy quyền thì phải có Giấy ủy quyền của người đại diện theo pháp luật của nhà thầu.\n2. Giấy ủy quyền phải được lập hợp pháp, có ngày ký trước hoặc cùng ngày ký đơn dự thầu và còn hiệu lực tại thời điểm đóng thầu.\n3. Văn bản dự thầu và giấy ủy quyền phải có chữ ký tươi hoặc chữ ký số hợp lệ và đóng dấu pháp nhân rõ nét của nhà thầu. Trường hợp con dấu bị mờ, không rõ thông tin pháp nhân hoặc nghi ngờ tính xác thực, bên mời thầu có trách nhiệm yêu cầu nhà thầu giải trình, xuất trình bản gốc để đối chiếu trước khi kết luận.",
+      "id": "LAW_DAU_THAU_DAT_DAI_2023::DIEU_19"
+    }
+  ],
+  "edges": [
+    {
+      "relation": "REFERENCES",
+      "source": "LAW_DAU_THAU_DAT_DAI_2023::DIEU_18",
+      "target": "LAW_DAU_THAU_DAT_DAI_2023::DIEU_14"
+    }
+  ]
+}
