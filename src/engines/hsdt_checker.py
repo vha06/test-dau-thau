@@ -77,7 +77,9 @@ def check_hsdt(
             LegalReference(
                 law_name=item.get("law_name", "Luật Đấu thầu"),
                 clause_id=item.get("clause_id", "Quy định liên quan"),
-                summary=item.get("content_markdown", "")[:250] + "..."
+                summary=item.get("content_markdown", "")[:250] + "...",
+                expansion_path=item.get("expansion_path"),
+                evidence_text=item.get("evidence_text"),
             )
             for item in legal_items
         ]

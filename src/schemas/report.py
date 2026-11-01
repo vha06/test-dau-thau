@@ -18,6 +18,8 @@ class LegalReference(BaseModel):
     law_name: str = Field(..., description="Tên văn bản (VD: Luật Đấu thầu 2023, HSMT Mục 2)")
     clause_id: str = Field(..., description="Điều, khoản, điểm tham chiếu")
     summary: str = Field(..., description="Tóm tắt nội dung quy định áp dụng")
+    expansion_path: Optional[str] = Field(None, description="Đường đi duyệt đồ thị tri thức (nếu có)")
+    evidence_text: Optional[str] = Field(None, description="Căn cứ dẫn chiếu cụ thể")
 
 class CriterionAssessment(BaseModel):
     criterion_id: str = Field(..., description="Mã định danh tiêu chí (VD: CRIT_BAO_LANH_01)")
@@ -29,6 +31,9 @@ class CriterionAssessment(BaseModel):
     reasoning: str = Field(..., description="Lập luận phân tích chi tiết dẫn đến kết luận")
     missing_or_unclear_points: List[str] = Field(default_factory=list, description="Các điểm mâu thuẫn, thiếu căn cứ")
     recommendation: str = Field(..., description="Đề xuất hành động cho chuyên viên thẩm định")
+    playbook_guide_used: Optional[str] = Field(None, description="Chỉ dẫn từ File hướng dẫn đã áp dụng")
+    user_decision: Optional[ComplianceStatus] = Field(None, description="Quyết định cuối cùng của người thẩm định")
+    user_decision_note: Optional[str] = Field("", description="Ý kiến phê duyệt / chỉ đạo chỉnh sửa của người dùng")
 
 class VerificationReport(BaseModel):
     report_id: str

@@ -1,0 +1,188 @@
+{
+  "playbook_id": "PLAYBOOK_HSMT_55_TIEU_CHI_DEMO_10",
+  "playbook_name": "Bộ Hướng dẫn Đối soát HSMT (10 Tiêu chí Trọng tâm từ Ma trận 55 Tiêu chí)",
+  "description": "Bộ tiêu chí đối soát chuẩn hóa phục vụ LLM và Rule Engine rà soát HSMT theo Luật Đấu thầu 2023 (sđ 2024, 2025), Nghị định 214/2025/NĐ-CP và Thông tư 79/2025/TT-BTC (bao quát đủ 5 loại kiểm tra: Có/Không, Ngưỡng số, Ngữ nghĩa LLM, So khớp mẫu, Đối chiếu chéo).",
+  "version": "2.0",
+  "updated_at": "2026-10-30",
+  "guides": [
+    {
+      "guide_id": "PB_01",
+      "criterion_name": "Tư cách hợp lệ nhà thầu & Bảo đảm cạnh tranh",
+      "category": "TU_CACH_HOP_LE",
+      "check_type": "Có/Không",
+      "severity": "Chặn",
+      "target_location": "Chỉ dẫn nhà thầu; Tiêu chuẩn đánh giá",
+      "legal_basis_ref": "Luật Đấu thầu 2023 (sđ 2024, 2025) - Điều 5, Điều 6",
+      "hsmt_keywords": ["tư cách hợp lệ", "hạch toán tài chính độc lập", "bảo đảm cạnh tranh", "mạng đấu thầu quốc gia", "giải thể", "phá sản"],
+      "legal_query": "Điều 5 Điều 6 tư cách hợp lệ của nhà thầu bảo đảm cạnh tranh độc lập pháp lý tài chính",
+      "audit_instruction": "Kiểm tra HSMT có quy định đầy đủ, đúng luật về tư cách hợp lệ của nhà thầu (đăng ký thành lập hợp pháp, hạch toán tài chính độc lập, không trong quá trình giải thể/phá sản, không trong thời gian bị cấm, đã đăng ký trên Hệ thống mạng đấu thầu quốc gia) và yêu cầu bảo đảm cạnh tranh (độc lập về pháp lý và tài chính với chủ đầu tư, tư vấn lập/thẩm định HSMT) theo Điều 5 và Điều 6 Luật Đấu thầu 2023 (sđ 2024, 2025).",
+      "red_flags": [
+        "Thiếu yêu cầu đăng ký trên Hệ thống mạng đấu thầu quốc gia hoặc thiếu điều kiện hạch toán tài chính độc lập",
+        "Bỏ sót quy định về bảo đảm cạnh tranh (độc lập pháp lý và tài chính với Chủ đầu tư, Tư vấn lập/thẩm định HSMT)",
+        "Cài cắm thêm giấy phép con ngoài quy định pháp luật vào mục tư cách hợp lệ"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_02",
+      "criterion_name": "Giá trị & Hiệu lực bảo đảm dự thầu",
+      "category": "BAO_LANH_DU_THAU",
+      "check_type": "Ngưỡng số",
+      "severity": "Chặn",
+      "target_location": "Bảng dữ liệu; Chỉ dẫn nhà thầu",
+      "legal_basis_ref": "Luật Đấu thầu 2023 (sđ 2024, 2025) - Điều 14; Tham số cấu hình hiện hành",
+      "hsmt_keywords": ["bảo đảm dự thầu", "bảo lãnh dự thầu", "tỷ lệ", "hiệu lực của bảo đảm dự thầu", "tổng giá trị dự toán"],
+      "legal_query": "Điều 14 bảo đảm dự thầu tỷ lệ mức bảo đảm thời gian hiệu lực bảo lãnh",
+      "audit_instruction": "Kiểm tra Giá trị bảo đảm dự thầu phải nằm trong khung tỷ lệ cho phép theo giá gói thầu (từ 1% đến 3% đối với gói thầu xây lắp/hàng hóa quy mô thông thường theo Điều 14 Luật Đấu thầu). Kiểm tra Hiệu lực bảo đảm dự thầu phải bằng hiệu lực HSDT cộng thêm số ngày theo quy định (30 ngày) và không được chỉ định ngân hàng phát hành tại một địa phương cụ thể.",
+      "red_flags": [
+        "Quy định tỷ lệ bảo đảm dự thầu vượt quá mức trần 3,0% giá gói thầu (ví dụ cài mức 4% hoặc 5%)",
+        "Chỉ chấp nhận thư bảo lãnh của ngân hàng đóng trên địa bàn tỉnh/thành phố cụ thể hoặc giới hạn nhóm ngân hàng",
+        "Thời gian hiệu lực bảo đảm dự thầu không khớp công thức (Hiệu lực HSDT + 30 ngày)"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_03",
+      "criterion_name": "Quy định liên danh, Đơn dự thầu & Đại diện hợp pháp",
+      "category": "UY_QUYEN",
+      "check_type": "Ngữ nghĩa (LLM)",
+      "severity": "Cảnh báo",
+      "target_location": "Chỉ dẫn nhà thầu; Tiêu chuẩn đánh giá",
+      "legal_basis_ref": "Luật Đấu thầu 2023 (Điều 18, 19); TT 79/2025/TT-BTC (mẫu HSMT tương ứng)",
+      "hsmt_keywords": ["đơn dự thầu", "đại diện hợp pháp", "giấy ủy quyền", "thỏa thuận liên danh", "thành viên đứng đầu liên danh"],
+      "legal_query": "Điều 18 Điều 19 đơn dự thầu giấy ủy quyền thỏa thuận liên danh phân chia công việc TT 79/2025/TT-BTC",
+      "audit_instruction": "Kiểm tra quy định về Đơn dự thầu, Giấy ủy quyền đại diện hợp pháp (lập trước hoặc cùng ngày ký đơn, còn hiệu lực đến thời điểm đóng thầu) và quy định đối với nhà thầu liên danh (Thỏa thuận liên danh phân chia rõ công việc, trách nhiệm thành viên đứng đầu, cách đánh giá năng lực tổng hợp và từng thành viên) theo đúng mẫu HSMT tại TT 79/2025/TT-BTC.",
+      "red_flags": [
+        "Hạn chế quyền ủy quyền hợp pháp của người đại diện theo pháp luật",
+        "Không quy định rõ nguyên tắc đánh giá năng lực tổng hợp và theo tỷ lệ thành viên trong liên danh",
+        "Hạn chế nhà thầu tham gia dưới hình thức liên danh trái quy định"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_04",
+      "criterion_name": "Danh mục điều kiện HSDT không hợp lệ",
+      "category": "DON_DU_THAU",
+      "check_type": "Ngữ nghĩa (LLM)",
+      "severity": "Chặn",
+      "target_location": "Chỉ dẫn nhà thầu; Tiêu chuẩn đánh giá",
+      "legal_basis_ref": "Luật Đấu thầu 2023 (sđ 2024, 2025); NĐ 214/2025/NĐ-CP, Điều 63",
+      "hsmt_keywords": ["điều kiện hsdt không hợp lệ", "loại bỏ hsdt", "bị loại trực tiếp", "khảo sát hiện trường", "điều kiện loại ngoài quy định"],
+      "legal_query": "Điều 63 NĐ 214/2025/NĐ-CP danh mục điều kiện HSDT không hợp lệ không bổ sung điều kiện loại ngoài quy định",
+      "audit_instruction": "Rà soát danh mục các trường hợp HSDT không hợp lệ hoặc bị loại trực tiếp trong HSMT. Kiểm tra xem HSMT có tự ý bổ sung điều kiện loại bỏ HSDT ngoài quy định của Luật Đấu thầu 2023 và Điều 63 Nghị định 214/2025/NĐ-CP hay không.",
+      "red_flags": [
+        "Bổ sung điều kiện loại trực tiếp nếu nhà thầu không nộp Biên bản xác nhận khảo sát hiện trường có chữ ký của Chủ đầu tư",
+        "Quy định loại ngay HSDT vì các sai sót hình thức không thuộc các trường hợp bị loại theo Luật Đấu thầu",
+        "Đưa thêm các điều kiện tiên quyết bất hợp lý trái với Điều 63 NĐ 214/2025/NĐ-CP"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_05",
+      "criterion_name": "Năng lực tài chính & Doanh thu bình quân hằng năm",
+      "category": "NANG_LUC_TAI_CHINH",
+      "check_type": "Ngưỡng số",
+      "severity": "Cảnh báo",
+      "target_location": "Tiêu chuẩn đánh giá",
+      "legal_basis_ref": "TT 79/2025/TT-BTC (mẫu HSMT tương ứng); Tham số cấu hình theo văn bản hiện hành",
+      "hsmt_keywords": ["năng lực tài chính", "giá trị tài sản ròng", "doanh thu bình quân", "nguồn lực tài chính", "cam kết tín dụng"],
+      "legal_query": "Tiêu chuẩn đánh giá năng lực tài chính doanh thu bình quân hằng năm hệ số giá gói thầu TT 79/2025/TT-BTC",
+      "audit_instruction": "Kiểm tra tiêu chuẩn năng lực tài chính: Giá trị tài sản ròng năm gần nhất dương; yêu cầu nguồn lực tài chính/cam kết tín dụng tương xứng quy mô; đặc biệt kiểm tra hệ số yêu cầu Doanh thu bình quân hằng năm so với giá gói thầu và thời gian thực hiện hợp đồng có nằm trong khung chuẩn (thông thường hệ số 1,5 - 2,0) theo TT 79/2025/TT-BTC hay không.",
+      "red_flags": [
+        "Yêu cầu doanh thu bình quân hằng năm quá cao (ví dụ gấp 3,0 - 3,5 lần giá gói thầu), vượt khung hệ số theo mẫu HSMT",
+        "Đòi hỏi nguồn lực tài chính khả dụng vượt quá tỷ lệ quy định so với giá gói thầu",
+        "Yêu cầu báo cáo tài chính quá số năm quy định (thông thường 3 năm gần nhất)"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_06",
+      "criterion_name": "Định nghĩa, Số lượng & Quy mô hợp đồng tương tự",
+      "category": "KINH_NGHIEM_DU_AN",
+      "check_type": "Ngữ nghĩa (LLM) & Ngưỡng số",
+      "severity": "Cảnh báo",
+      "target_location": "Tiêu chuẩn đánh giá",
+      "legal_basis_ref": "TT 79/2025/TT-BTC; NĐ 214/2025/NĐ-CP, Điều 63; Luật Đấu thầu 2023 (Điều 16, 44)",
+      "hsmt_keywords": ["hợp đồng tương tự", "kinh nghiệm thực hiện", "địa bàn tỉnh", "quy mô hợp đồng tương tự"],
+      "legal_query": "Điều 16 Điều 44 Luật Đấu thầu Điều 63 NĐ 214/2025/NĐ-CP định nghĩa hợp đồng tương tự không gắn địa bàn cụ thể",
+      "audit_instruction": "Kiểm tra định nghĩa hợp đồng tương tự có rõ ràng về tính chất, quy mô, độ phức tạp hay không; kiểm tra số lượng và quy mô hợp đồng tương tự không được vượt quá quy mô gói thầu; đặc biệt rà soát xem HSMT có gắn hợp đồng tương tự với khách hàng cụ thể hoặc bắt buộc phải thực hiện trên một địa bàn tỉnh/thành phố cụ thể trái với Điều 63 NĐ 214/2025/NĐ-CP và Điều 16 Luật Đấu thầu hay không.",
+      "red_flags": [
+        "Bắt buộc hợp đồng tương tự phải thực hiện trên địa bàn một tỉnh, thành phố hoặc địa phương cụ thể",
+        "Yêu cầu giá trị mỗi hợp đồng tương tự cao hơn quy mô gói thầu đang xét (vượt trần 50% - 70% theo mẫu)",
+        "Gắn hợp đồng tương tự phải ký với một nhóm chủ đầu tư hoặc cơ quan cụ thể"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_07",
+      "criterion_name": "Nhân sự chủ chốt & Thiết bị thi công chủ yếu",
+      "category": "KHAC",
+      "check_type": "Ngữ nghĩa (LLM)",
+      "severity": "Cảnh báo",
+      "target_location": "Tiêu chuẩn đánh giá; Biểu mẫu",
+      "legal_basis_ref": "TT 79/2025/TT-BTC (mẫu HSMT tương ứng); NĐ 214/2025/NĐ-CP, Điều 63",
+      "hsmt_keywords": ["nhân sự chủ chốt", "chỉ huy trưởng", "thiết bị thi công", "thiết bị chủ yếu", "bảo hiểm xã hội", "sở hữu hoặc thuê"],
+      "legal_query": "Nhân sự chủ chốt thiết bị chủ yếu cho phép sở hữu hoặc thuê TT 79/2025/TT-BTC Điều 63 NĐ 214/2025/NĐ-CP",
+      "audit_instruction": "Kiểm tra yêu cầu Nhân sự chủ chốt (vị trí, số năm kinh nghiệm, chứng chỉ phù hợp tính chất gói thầu; không yêu cầu thừa vị trí hoặc bắt buộc đóng BHXH nhiều năm tại chính nhà thầu) và Thiết bị chủ yếu (chỉ yêu cầu thiết bị thực sự cần thiết; bắt buộc phải cho phép nhà thầu sử dụng thiết bị thuộc sở hữu hoặc đi thuê hợp pháp theo TT 79/2025/TT-BTC).",
+      "red_flags": [
+        "Bắt buộc thiết bị thi công phải thuộc sở hữu 100% của nhà thầu, không chấp nhận thiết bị đi thuê",
+        "Yêu cầu nhân sự chủ chốt phải có HĐLĐ không xác định thời hạn và đóng BHXH liên tục >= 5 năm tại chính nhà thầu",
+        "Yêu cầu chứng chỉ hoặc số lượng nhân sự/thiết bị vượt quá nhu cầu thực tế của gói thầu"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_08",
+      "criterion_name": "Không nêu nhãn hiệu, xuất xứ hàng hóa/thiết bị",
+      "category": "KHAC",
+      "check_type": "Ngữ nghĩa (LLM)",
+      "severity": "Chặn",
+      "target_location": "Yêu cầu kỹ thuật",
+      "legal_basis_ref": "Luật Đấu thầu 2023 (sđ 2024, 2025) - Khoản 3 Điều 44; NĐ 214/2025/NĐ-CP, Điều 63",
+      "hsmt_keywords": ["nhãn hiệu", "xuất xứ", "thương hiệu", "máy phát điện", "trạm biến áp", "hoặc tương đương"],
+      "legal_query": "Khoản 3 Điều 44 Luật Đấu thầu Điều 63 NĐ 214/2025/NĐ-CP không nêu nhãn hiệu xuất xứ hoặc tương đương",
+      "audit_instruction": "Kiểm tra Chương V (Yêu cầu kỹ thuật) có chỉ định nhãn hiệu, model, nhà sản xuất hoặc xuất xứ cụ thể của vật tư, thiết bị hay không. Nếu thuộc trường hợp đặc biệt buộc phải nêu nhãn hiệu để mô tả thông số kỹ thuật thì bắt buộc phải kèm theo cụm từ 'hoặc tương đương' theo Khoản 3 Điều 44 Luật Đấu thầu và Điều 63 NĐ 214/2025/NĐ-CP.",
+      "red_flags": [
+        "Chỉ định đích danh thương hiệu, nhãn hiệu, xuất xứ (VD: Mitsubishi, Cummins, Nhật Bản, Mỹ...) mà không có cụm từ 'hoặc tương đương'",
+        "Ghi rõ câu chữ loại trừ: 'không chấp nhận bất kỳ nhãn hiệu hoặc xuất xứ tương đương nào khác'",
+        "Cài cắm thông số kỹ thuật độc quyền chỉ duy nhất 1 hãng sản xuất đáp ứng được"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_09",
+      "criterion_name": "Phương pháp đánh giá kỹ thuật, Xác định giá & Ưu đãi",
+      "category": "KHAC",
+      "check_type": "So khớp mẫu & Ngữ nghĩa (LLM)",
+      "severity": "Chặn",
+      "target_location": "Bảng dữ liệu; Tiêu chuẩn đánh giá",
+      "legal_basis_ref": "Luật Đấu thầu 2023; NĐ 214/2025/NĐ-CP, Điều 5; TT 79/2025/TT-BTC",
+      "hsmt_keywords": ["phương pháp đánh giá kỹ thuật", "phương pháp xác định giá", "giá thấp nhất", "ưu đãi trong lựa chọn nhà thầu", "doanh nghiệp nhỏ và vừa"],
+      "legal_query": "Phương pháp đánh giá kỹ thuật phương pháp xác định giá ưu đãi Điều 5 NĐ 214/2025/NĐ-CP TT 79/2025/TT-BTC",
+      "audit_instruction": "Kiểm tra phương pháp đánh giá kỹ thuật (Đạt/Không đạt hoặc Chấm điểm) và phương pháp xác định giá (Giá thấp nhất / Giá đánh giá / Kết hợp kỹ thuật - giá) có phù hợp với loại gói thầu và mẫu tại TT 79/2025/TT-BTC hay không; đồng thời kiểm tra quy định về ưu đãi hàng hóa sản xuất trong nước, nhà thầu trong nước, DNNVV theo đúng nguyên tắc tại Điều 5 NĐ 214/2025/NĐ-CP.",
+      "red_flags": [
+        "Áp dụng sai phương pháp đánh giá kỹ thuật hoặc phương pháp xác định giá so với quy mô, tính chất gói thầu",
+        "Bỏ sót hoặc quy định sai nguyên tắc tính ưu đãi cho hàng hóa trong nước và DNNVV theo Điều 5 NĐ 214/2025/NĐ-CP"
+      ],
+      "is_mandatory": true
+    },
+    {
+      "guide_id": "PB_10",
+      "criterion_name": "Điều kiện hợp đồng, Số liệu giữa các chương & Placeholder chưa điền",
+      "category": "KHAC",
+      "check_type": "Đối chiếu chéo & Có/Không",
+      "severity": "Chặn",
+      "target_location": "Điều kiện cụ thể HĐ; Toàn bộ HSMT",
+      "legal_basis_ref": "Luật Đấu thầu 2023 (Điều 68); TT 79/2025/TT-BTC (mẫu HSMT tương ứng)",
+      "hsmt_keywords": ["điều kiện cụ thể của hợp đồng", "bảo đảm thực hiện hợp đồng", "thời gian thực hiện hợp đồng", "[ghi", "____", "tạm ứng", "thanh toán"],
+      "legal_query": "Điều 68 Luật Đấu thầu bảo đảm thực hiện hợp đồng thống nhất số liệu giữa các chương placeholder TT 79/2025/TT-BTC",
+      "audit_instruction": "Đối chiếu chéo số liệu giữa Bảng dữ liệu, Chỉ dẫn nhà thầu, Yêu cầu kỹ thuật và Điều kiện cụ thể của hợp đồng (đặc biệt là Thời gian thực hiện hợp đồng, Loại hợp đồng) xem có mâu thuẫn không; kiểm tra tỷ lệ Bảo đảm thực hiện hợp đồng trong khung 1% - 3% (Điều 68); và kiểm tra toàn bộ văn bản HSMT xem còn sót các nội dung mẫu Placeholder chưa điền như '[Ghi...]', '____' hay không.",
+      "red_flags": [
+        "Mâu thuẫn số liệu giữa các chương (ví dụ: Bảng dữ liệu/Yêu cầu kỹ thuật ghi tiến độ 450 ngày nhưng Điều kiện hợp đồng ghi 360 ngày)",
+        "Còn sót các chuỗi Placeholder mẫu chưa điền thông tin như '[Ghi...]', '____' trong Điều kiện cụ thể của hợp đồng",
+        "Quy định tỷ lệ bảo đảm thực hiện hợp đồng hoặc mức phạt vi phạm vượt trần pháp luật"
+      ],
+      "is_mandatory": true
+    }
+  ]
+}
