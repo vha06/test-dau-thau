@@ -20,17 +20,64 @@ pip install -r requirements.txt
 
 ---
 
-## 2. Kiểm Thử Hệ Thống (Pytest)
+## 2. Tiện Ích Chuyển Đổi File PDF ➔ JSON ParsedDocument
 
-Chạy bộ kiểm thử tự động toàn diện kiểm tra tất cả các tầng (Schemas, Deterministic Rules, GraphRAG, Luồng 1 HSMT, Luồng 2 HSDT, và FastAPI REST Endpoints):
+Hệ thống tích hợp sẵn bộ chuyển đổi PDF chuyên dụng bóc tách cấu trúc văn bản pháp luật và hồ sơ đấu thầu:
+
+### A. Chuyển đổi qua dòng lệnh (CLI):
+```bash
+# Chuyển đổi văn bản Luật (tự động phân mảnh theo Điều/Khoản)
+python scripts/convert_pdf.py data_law/43-2024-qh15.pdf data/mock_law/43-2024-qh15.json --role LAW
+
+# Chuyển đổi Hồ sơ mời thầu (HSMT)
+python scripts/convert_pdf.py path/to/hsmt.pdf path/to/hsmt.json --role HSMT
+
+# Chuyển đổi Hồ sơ dự thầu (HSDT)
+python scripts/convert_pdf.py path/to/hsdt.pdf path/to/hsdt.json --role HSDT
+```
+
+### B. Tải trực tiếp file PDF trên Giao diện Streamlit:
+- **Tại tab Dữ liệu Luật:** Cho phép upload trực tiếp file `.pdf`, tự động bóc tách Điều/Khoản và lưu vào kho CSDL Luật để dựng GraphRAG.
+- **Tại tab Thẩm định HSMT:** Cho phép upload trực tiếp file `.pdf`, tự động bóc tách tiêu chí và thẩm định.
+- **Tại tab Thẩm định HSDT:** Cho phép upload trực tiếp file `.pdf`, tự động trích xuất các thành phần hồ sơ và lập Ma trận Tuân thủ.
+- **Tab Tiện ích chuyên biệt:** "🛠️ Bộ chuyển đổi PDF ➔ JSON" giúp xem trước, tải file JSON hoặc lưu vào dự án với 1 cú click.
+
+---
+
+## 3. Các Module Tri Thức Nâng Cao (Thừa Kế Từ Legal Retrieval Lab)
+
+Dự án được kế thừa và tối ưu hóa 3 module chuyên sâu từ dự án [Legal Retrieval Lab (test-kg-rag)](file:///D:/GitHub/test-kg-rag):
+
+1. **Bộ bóc tách dẫn chiếu pháp luật chuyên sâu (`LegalCitationParser`):**
+   - Định vị: [src/graph_rag/citation_parser.py](file:///D:/GitHub/test-dau-thau/src/graph_rag/citation_parser.py)
+   - Tự động nhận diện và bóc tách các loại quan hệ pháp lý: `REFERENCES` (dẫn chiếu thông thường), `DETAILS` (hướng dẫn thi hành, quy định chi tiết), `AMENDS` (sửa đổi, bổ sung), `REPEALS` (bãi bỏ).
+   - Tự động phân tích các số hiệu văn bản quy phạm pháp luật chuẩn (Luật, Nghị định, Thông tư) và làm giàu đồ thị liên văn bản.
+
+2. **Phân mảnh có tiêm ngữ cảnh Cha-Con theo Chiến lược A3 (`StructureChunker`):**
+   - Định vị: [src/converters/structure_chunker.py](file:///D:/GitHub/test-dau-thau/src/converters/structure_chunker.py)
+   - Áp dụng kỹ thuật **Context Header Injection**: Tiêm tiền tố `[Văn bản: {doc_title} | {Chương} > {Điều}]\n{Tiêu đề}` vào từng chunk Khoản/Điểm con.
+   - Ngăn chặn hoàn toàn hiện tượng mất ngữ cảnh khi nhúng vector và tra cứu trong kho tài liệu đấu thầu khổng lồ.
+
+3. **Bộ mở rộng đồ thị & đường đi chứng minh (`GraphExpander`):**
+   - Định vị: [src/graph_rag/expander.py](file:///D:/GitHub/test-dau-thau/src/graph_rag/expander.py)
+   - Hỗ trợ duyệt đồ thị đa tầng (1-hop, 2-hop) kèm hệ số suy giảm (`hop_decay = 0.7`) và ma trận trọng số quan hệ pháp luật.
+   - Thưởng điểm tương đồng từ khóa (`lexical overlap bonus`) giữa câu hỏi thẩm định và điều luật mở rộng.
+   - Tự động xây dựng đường đi giải trình (`expansion_path`) và căn cứ chứng minh (`evidence_text`) giúp báo cáo thẩm định minh bạch 100%.
+
+---
+
+## 4. Kiểm Thử Hệ Thống (Pytest)
+
+Chạy bộ kiểm thử tự động toàn diện kiểm tra tất cả các tầng (Schemas, Deterministic Rules, GraphRAG, Luồng 1 HSMT, Luồng 2 HSDT, Các module chuyển đổi A3 & Legal Parser, và FastAPI REST Endpoints):
 
 ```bash
-pytest tests/test_workflows.py -v
+pytest tests/ -v
+# 20/20 test cases passed
 ```
 
 ---
 
-## 3. Khởi Chạy Giao Diện Demo (Streamlit)
+## 5. Khởi Chạy Giao Diện Demo (Streamlit)
 
 Giao diện được thiết kế lại gồm 2 phần lớn theo đúng quy trình nghiệp vụ:
 - **🗄️ Phần 1: Kho Dữ Liệu:**

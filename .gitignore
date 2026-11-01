@@ -221,3 +221,6 @@ __marimo__/
 
 # ChromaDB local storage
 data/storage/chroma_db/
+
+# Scratch & temporary workspace
+scratch/
