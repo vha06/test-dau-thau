@@ -12,6 +12,7 @@ except ImportError:
     HAS_CHROMADB = False
 
 from config.settings import settings
+from src.graph_rag.expander import GraphExpander
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +23,11 @@ def retrieve_legal_context(
     storage_dir: str = None
 ) -> List[Dict[str, Any]]:
     """
-    Truy xuất lai:
-    1. Vector Search trên ChromaDB lấy Top-K điều khoản liên quan
-    2. Duyệt đồ thị NetworkX theo các cạnh REFERENCES (1-hop) để lấy thêm điều khoản liên quan
-    3. Hợp nhất kết quả và trả về danh sách có trích dẫn chi tiết
+    Truy xuất lai (Hybrid GraphRAG Retriever):
+    1. Vector Search trên ChromaDB hoặc Keyword Overlap để tìm Seed Nodes
+    2. Áp dụng GraphExpander (kế thừa từ test-kg-rag) để mở rộng n-hop có tính hệ số suy giảm (hop_decay)
+    3. Tự động lưu vết đường đi giải trình (expansion_path) và căn cứ pháp lý (evidence_text)
+    4. Trả về danh sách điều luật có cấu trúc phục vụ Deterministic Engine & LLM Gateway
     """
     target_storage_dir = Path(storage_dir) if storage_dir else settings.storage_dir
     graph_path = target_storage_dir / "law_graph.json"
@@ -45,21 +47,47 @@ def retrieve_legal_context(
     except TypeError:
         G = nx.node_link_graph(graph_data)
     
-    matched_node_ids: List[str] = []
+    seed_nodes: List[Dict[str, Any]] = []
+    seen_ids: Set[str] = set()
     
-    # 1. Thử truy vấn qua ChromaDB (nếu có thư viện)
+    # 1. Thử truy vấn qua ChromaDB (Vector Search)
     if HAS_CHROMADB:
         try:
             client = chromadb.PersistentClient(path=str(chroma_dir))
             collection = client.get_collection(name="legal_articles")
-            results = collection.query(query_texts=[query], n_results=min(top_k, max(1, G.number_of_nodes())))
+            results = collection.query(
+                query_texts=[query],
+                n_results=min(top_k * 2, max(1, G.number_of_nodes())),
+                include=["metadatas", "documents", "distances"]
+            )
             if results and results["ids"] and results["ids"][0]:
-                matched_node_ids = results["ids"][0]
+                for idx, item_id in enumerate(results["ids"][0]):
+                    meta = results["metadatas"][0][idx] if results.get("metadatas") else {}
+                    node_id = meta.get("node_id", item_id)
+                    dist = results["distances"][0][idx] if results.get("distances") else 0.5
+                    score = round(max(0.1, 1.0 - dist), 4)
+
+                    if node_id in G.nodes and node_id not in seen_ids:
+                        seen_ids.add(node_id)
+                        attrs = G.nodes[node_id]
+                        seed_nodes.append({
+                            "node_id": node_id,
+                            "law_name": attrs.get("file_name", "Luật liên quan"),
+                            "clause_id": attrs.get("heading", node_id),
+                            "content_markdown": attrs.get("content_markdown", ""),
+                            "page_number": attrs.get("page_start", 1),
+                            "relation_type": "DIRECT_MATCH",
+                            "score": score,
+                            "expansion_path": f"Gốc: {attrs.get('heading', node_id)}",
+                            "evidence_text": "Khớp ngữ nghĩa Vector Search"
+                        })
+                        if len(seed_nodes) >= top_k:
+                            break
         except Exception as e:
-            logger.info(f"Vector search qua ChromaDB không khả dụng ({e}), sử dụng từ khóa dự phòng.")
+            logger.info(f"Vector search qua ChromaDB không khả dụng ({e}), chuyển sang tìm kiếm từ khóa dự phòng.")
         
-    # Fallback tìm kiếm từ khóa nếu Vector search chưa tìm thấy
-    if not matched_node_ids:
+    # 2. Fallback tìm kiếm từ khóa nếu Vector search chưa tìm thấy hoặc không có ChromaDB
+    if not seed_nodes:
         query_words = set(query.lower().split())
         scored_nodes = []
         for n, attrs in G.nodes(data=True):
@@ -68,55 +96,49 @@ def retrieve_legal_context(
             if score > 0:
                 scored_nodes.append((score, n))
         scored_nodes.sort(reverse=True)
-        matched_node_ids = [n for _, n in scored_nodes[:top_k]]
         
-    if not matched_node_ids and G.number_of_nodes() > 0:
-        matched_node_ids = list(G.nodes())[:top_k]
-
-    # 2. Graph Traversal: Duyệt 1-2 hop theo cạnh REFERENCES
-    direct_nodes: Set[str] = set(matched_node_ids)
-    hop_nodes: Set[str] = set()
-    
-    for node_id in direct_nodes:
-        if not G.has_node(node_id):
-            continue
-        # Đi theo cạnh ra (node dẫn chiếu tới ai)
-        for _, target, data in G.out_edges(node_id, data=True):
-            if data.get("relation") == "REFERENCES" and target not in direct_nodes:
-                hop_nodes.add(target)
-        # Đi theo cạnh vào (ai dẫn chiếu tới node)
-        for source, _, data in G.in_edges(node_id, data=True):
-            if data.get("relation") == "REFERENCES" and source not in direct_nodes:
-                hop_nodes.add(source)
-
-    # 3. Tổng hợp kết quả
-    output = []
-    
-    for n in direct_nodes:
-        if G.has_node(n):
+        for score, n in scored_nodes[:top_k]:
             attrs = G.nodes[n]
-            output.append({
+            seed_nodes.append({
                 "node_id": n,
                 "law_name": attrs.get("file_name", "Luật liên quan"),
                 "clause_id": attrs.get("heading", n),
                 "content_markdown": attrs.get("content_markdown", ""),
                 "page_number": attrs.get("page_start", 1),
-                "relation_type": "DIRECT_MATCH"
+                "relation_type": "DIRECT_MATCH",
+                "score": float(score),
+                "expansion_path": f"Gốc: {attrs.get('heading', n)}",
+                "evidence_text": f"Khớp {score} từ khóa truy vấn"
             })
-            
-    for n in hop_nodes:
-        if G.has_node(n):
+            seen_ids.add(n)
+        
+    # 3. Fallback tối hậu: Lấy các nodes đầu tiên nếu đồ thị có node
+    if not seed_nodes and G.number_of_nodes() > 0:
+        for n in list(G.nodes())[:top_k]:
             attrs = G.nodes[n]
-            output.append({
+            seed_nodes.append({
                 "node_id": n,
                 "law_name": attrs.get("file_name", "Luật liên quan"),
                 "clause_id": attrs.get("heading", n),
                 "content_markdown": attrs.get("content_markdown", ""),
                 "page_number": attrs.get("page_start", 1),
-                "relation_type": "GRAPH_HOP"
+                "relation_type": "DIRECT_MATCH",
+                "score": 0.5,
+                "expansion_path": f"Gốc: {attrs.get('heading', n)}",
+                "evidence_text": "Chọn mặc định từ đồ thị"
             })
-            
-    return output
+
+    # 4. Áp dụng GraphExpander (từ test-kg-rag) mở rộng đa tầng có hệ số suy giảm hop_decay
+    expander = GraphExpander(graph=G, decay_factor=0.7)
+    final_results = expander.expand(
+        query=query,
+        seed_nodes=seed_nodes,
+        max_hops=hop_depth,
+        seed_limit=top_k,
+        max_expanded_nodes=4
+    )
+
+    return final_results
 
 def format_legal_context_str(context_items: List[Dict[str, Any]]) -> str:
     """Định dạng danh sách căn cứ pháp lý thành chuỗi Markdown cho Prompt LLM."""
@@ -125,10 +147,17 @@ def format_legal_context_str(context_items: List[Dict[str, Any]]) -> str:
         
     formatted = []
     for idx, item in enumerate(context_items, 1):
-        rel_label = "[Khớp trực tiếp]" if item.get("relation_type") == "DIRECT_MATCH" else "[Dẫn chiếu liên quan qua đồ thị]"
+        rel_type = item.get("relation_type", "DIRECT_MATCH")
+        rel_label = "[Khớp trực tiếp]" if rel_type == "DIRECT_MATCH" else f"[Dẫn chiếu qua đồ thị: {rel_type}]"
+        
+        path_info = f"- Đường đi pháp lý: {item.get('expansion_path')}\n" if item.get('expansion_path') else ""
+        evidence_info = f"- Căn cứ: {item.get('evidence_text')}\n" if item.get('evidence_text') else ""
+
         formatted.append(
             f"### {idx}. {item.get('clause_id')} {rel_label}\n"
             f"- Nguồn: {item.get('law_name')} (Trang {item.get('page_number')})\n"
+            f"{path_info}"
+            f"{evidence_info}"
             f"- Nội dung quy định:\n{item.get('content_markdown')}\n"
         )
     return "\n".join(formatted)

@@ -13,6 +13,8 @@ except ImportError:
     HAS_CHROMADB = False
 
 from src.schemas.document import ParsedDocument
+from src.converters.structure_chunker import StructureChunker
+from src.graph_rag.citation_parser import LegalCitationParser
 from config.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -20,16 +22,17 @@ logger = logging.getLogger(__name__)
 def build_law_index(law_dir: str = None, storage_dir: str = None) -> Dict[str, Any]:
     """
     Nạp các văn bản luật từ law_dir:
-    1. Xây dựng đồ thị NetworkX biểu diễn liên kết tham chiếu (REFERENCES)
-    2. Lưu đồ thị ra law_graph.json
-    3. Lưu vector embedding của các điều khoản vào ChromaDB
+    1. Xây dựng đồ thị NetworkX biểu diễn cấu trúc văn bản và liên kết dẫn chiếu đa tầng
+    2. Áp dụng LegalCitationParser để phân tích quan hệ pháp luật (REFERENCES, DETAILS, AMENDS, REPEALS)
+    3. Áp dụng StructureChunker (Chiến lược A3) để tiêm Context Header cho các vector chunks
+    4. Lưu đồ thị ra law_graph.json và vector embedding vào ChromaDB
     """
     target_law_dir = Path(law_dir) if law_dir else settings.law_dir
     target_storage_dir = Path(storage_dir) if storage_dir else settings.storage_dir
     target_storage_dir.mkdir(parents=True, exist_ok=True)
     
     G = nx.DiGraph()
-    sections_for_vector = []
+    all_docs: List[ParsedDocument] = []
     
     # 1. Đọc tất cả các file JSON văn bản luật
     json_files = list(target_law_dir.glob("*.json"))
@@ -49,6 +52,7 @@ def build_law_index(law_dir: str = None, storage_dir: str = None) -> Dict[str, A
                 docs = [ParsedDocument.model_validate(data)]
                 
             for doc in docs:
+                all_docs.append(doc)
                 for sec in doc.sections:
                     node_id = f"{doc.doc_id}::{sec.section_id}"
                     G.add_node(
@@ -64,40 +68,18 @@ def build_law_index(law_dir: str = None, storage_dir: str = None) -> Dict[str, A
                     
                     if sec.parent_id:
                         parent_node_id = f"{doc.doc_id}::{sec.parent_id}"
-                        G.add_edge(node_id, parent_node_id, relation="PART_OF")
-                        
-                    sections_for_vector.append({
-                        "node_id": node_id,
-                        "doc_id": doc.doc_id,
-                        "heading": sec.heading,
-                        "page_start": sec.page_start,
-                        "content": f"{sec.heading}\n{sec.content_markdown}"
-                    })
+                        G.add_edge(node_id, parent_node_id, relation="PART_OF", relation_type="PART_OF")
         except Exception as e:
             logger.error(f"Lỗi khi đọc file luật {json_file}: {e}")
 
-    # 2. Phân tích tham chiếu chéo (REFERENCES) bằng Regex
-    # Ví dụ: "theo quy định tại Điều 14", "Điều 19", "Khoản 2"
-    ref_pattern = re.compile(r"(?:Điều|Khoản|Mục)\s+(\d+[a-zA-Z0-9\.]*)", re.IGNORECASE)
-    
-    node_lookup: Dict[str, str] = {}
-    for node_id, attrs in G.nodes(data=True):
-        heading = attrs.get("heading", "")
-        sec_id = attrs.get("section_id", "")
-        # Map số điều khoản (ví dụ "14") tới node_id
-        numbers = ref_pattern.findall(heading) + ref_pattern.findall(sec_id)
-        for num in numbers:
-            node_lookup[num] = node_id
-            
-    for node_id, attrs in G.nodes(data=True):
-        content = attrs.get("content_markdown", "")
-        found_refs = ref_pattern.findall(content)
-        for ref_num in found_refs:
-            if ref_num in node_lookup and node_lookup[ref_num] != node_id:
-                target_node = node_lookup[ref_num]
-                G.add_edge(node_id, target_node, relation="REFERENCES")
+    # 2. Phân tích dẫn chiếu pháp luật bằng LegalCitationParser (từ test-kg-rag)
+    LegalCitationParser.enrich_graph_with_citations(G, all_docs)
 
-    # 3. Lưu đồ thị ra law_graph.json
+    # 3. Phân mảnh theo Chiến lược A3 (Structure-aware Legal Chunking with Context Header Injection)
+    chunker = StructureChunker(max_tokens=384)
+    legal_chunks = chunker.chunk_documents(all_docs)
+
+    # 4. Lưu đồ thị ra law_graph.json
     try:
         graph_data = nx.node_link_data(G, edges="edges")
     except TypeError:
@@ -106,37 +88,43 @@ def build_law_index(law_dir: str = None, storage_dir: str = None) -> Dict[str, A
     with open(graph_path, "w", encoding="utf-8") as f:
         json.dump(graph_data, f, ensure_ascii=False, indent=2)
 
-    # 4. Nạp vào ChromaDB (nếu đã cài đặt thư viện)
+    # 5. Nạp vào ChromaDB (nếu có) với các Chunks đã được tiêm Context Header
     if HAS_CHROMADB:
         chroma_dir = target_storage_dir / "chroma_db"
         try:
             client = chromadb.PersistentClient(path=str(chroma_dir))
             collection = client.get_or_create_collection(name="legal_articles")
             
-            # Xóa các vector cũ nếu có để tránh trùng lặp
             existing = collection.get()
             if existing and existing["ids"]:
                 collection.delete(ids=existing["ids"])
                 
-            if sections_for_vector:
+            if legal_chunks:
                 collection.add(
-                    ids=[item["node_id"] for item in sections_for_vector],
-                    documents=[item["content"] for item in sections_for_vector],
+                    ids=[c.chunk_id for c in legal_chunks],
+                    documents=[c.content_with_header for c in legal_chunks],
                     metadatas=[{
-                        "node_id": item["node_id"],
-                        "doc_id": item["doc_id"],
-                        "heading": item["heading"],
-                        "page_start": item["page_start"]
-                    } for item in sections_for_vector]
+                        "chunk_id": c.chunk_id,
+                        "node_id": f"{c.doc_id}::{c.section_id}",
+                        "doc_id": c.doc_id,
+                        "heading": c.heading,
+                        "structural_path": c.structural_path,
+                        "page_start": c.page_start,
+                        "level": c.level,
+                    } for c in legal_chunks]
                 )
         except Exception as e:
             logger.warning(f"Lỗi khi index vào ChromaDB: {e}. Hệ thống sẽ sử dụng fallback đồ thị và từ khóa.")
     else:
         logger.info("ChromaDB chưa được cài đặt trong môi trường này, sử dụng NetworkX Graph và tra cứu từ khóa dự phòng.")
 
+    chunk_stats = StructureChunker.compute_stats(legal_chunks)
+
     return {
-        "total_documents": len(json_files),
+        "total_documents": len(all_docs),
         "total_nodes": G.number_of_nodes(),
         "total_edges": G.number_of_edges(),
+        "total_chunks": len(legal_chunks),
+        "chunk_stats": chunk_stats,
         "graph_path": str(graph_path)
     }
